@@ -18,6 +18,7 @@ const LoginSchema = new mongoose.Schema({
         type: String,
         required: true
     }
+    
 });
 
 const collection = new mongoose.model("users",LoginSchema);
