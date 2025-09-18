@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* admin.css - Modern, clean, and responsive admin dashboard style */
 body {
     background: #f4f6f9;
@@ -358,3 +359,245 @@ button {
         width: 100px;
     }
 }
+=======
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+@import url('https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #efeff1;
+    padding: 20px;
+}
+
+.dashboard-container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    position: fixed;
+}
+
+header h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2em;
+    color: #333;
+}
+
+section {
+    margin-bottom: 40px;
+}
+
+section h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 1.5em;
+}
+
+.add-User{
+    display: flex;
+    align-items: right;
+    top: 143px;
+    left: 1140px;
+    position: absolute;
+    border-radius: 5px;
+} 
+
+.add-user-btn {
+    display: inline-block;
+    background-color: #000; 
+    color: #fff; 
+    padding: 10px;
+    border-radius: 5px; 
+    text-align: center; 
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.add-user-btn:hover {
+    background-color: #444; 
+    color: #fff; 
+}
+
+.add-user-btn i {
+    font-size: 15px;
+    color: #fff;
+}
+
+.search-container {
+    display: flex;
+    justify-content: left;
+    margin-bottom: 20px;
+}
+
+.search-form {
+    display: flex;
+    align-items: center;
+}
+
+.search-form input[type="text"] {
+    width: 300px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px 0 0 5px;
+    outline: none;
+}
+
+.search-btn {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-left: none;
+    border-radius: 0 5px 5px 0;
+    background-color: #0a0a0a;
+    color: white;
+    cursor: pointer;
+}
+
+.search-btn:hover {
+    background-color: #424342;
+}
+
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+table th, table td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+table th {
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.action-form {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.action-form input[type="text"], .action-form input[type="password"] {
+    width: 150px;
+    padding: 5px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    outline: none;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    outline: none;
+}
+
+.create-user-form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: #fff;
+}
+
+.create-user-form .form-group input {
+    width: 100%;
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    /* font-size: 1em;
+    font-weight: 600; */
+    transition: background-color 0.3s;
+    border-radius: 8px;
+}
+
+.create-btn {
+    background-color: #4CAF50;
+    color: white;
+
+}
+
+.create-btn:hover {
+    background-color: #45a049;
+    width: 200px;
+
+
+}
+
+.btn-edit {
+    background-color: #007bb5;
+    color: white;
+    border-radius: 5px;
+}
+
+.btn-edit:hover {
+    background-color: #005a80;
+}
+
+.delete-btn {
+    background-color: #f44336;
+    color: white;
+    border-radius: 5px;
+}
+
+.delete-btn:hover {
+    background-color: #e53935;
+}
+
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 10px;
+    }
+
+    .search-form input[type="text"] {
+        width: 200px;
+    }
+
+    .action-form input[type="text"], .action-form input[type="password"] {
+        width: 100px;
+    }
+}
+>>>>>>> ec867de18a80236e2b318efa1eba9ec97ba5b1d7

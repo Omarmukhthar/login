@@ -18,7 +18,12 @@ async function connectDB() {
             throw err;
         }
     }
+<<<<<<< HEAD
     return collection;
 }
+=======
+    
+});
+>>>>>>> ec867de18a80236e2b318efa1eba9ec97ba5b1d7
 
 module.exports = { connectDB };
