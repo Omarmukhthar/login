@@ -1,26 +1,24 @@
-const mongoose=require("mongoose");
-const connect=mongoose.connect("mongodb://localhost:27017/Login-tut");
+// Example: Export your MongoDB collection or model here
+// Replace the following with your actual MongoDB connection and collection/model
+const { MongoClient } = require('mongodb');
+const uri = process.env.MONGO_URI || 'mongodb://localhost:27017';
+const client = new MongoClient(uri);
+const dbName = process.env.DB_NAME || 'login';
+let collection;
 
-
-connect.then(() =>{
-    console.log("databases connected Successfully");
-})
-.catch(()=>{
-    console.log("DataBase cannot be connected ")
-});
-
-const LoginSchema = new mongoose.Schema({
-    name:{
-        type: String,
-        required: true
-    },
-    password:{
-        type: String,
-        required: true
+async function connectDB() {
+    if (!collection) {
+        try {
+            await client.connect();
+            console.log('Connected to MongoDB');
+            const db = client.db(dbName);
+            collection = db.collection('users');
+        } catch (err) {
+            console.error('MongoDB connection error:', err);
+            throw err;
+        }
     }
-    
-});
+    return collection;
+}
 
-const collection = new mongoose.model("users",LoginSchema);
-
-module.exports = collection;
+module.exports = { connectDB };

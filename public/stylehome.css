@@ -1,3 +1,306 @@
+/* --- Enhanced E-commerce Home Features --- */
+.sticky-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+}
+.hero {
+  background: linear-gradient(120deg, #e0e7ff 60%, #fff 100%);
+  padding: 56px 0 40px 0;
+  text-align: center;
+  animation: heroFadeIn 1.2s cubic-bezier(.4,0,.2,1);
+}
+@keyframes heroFadeIn {
+  from { opacity: 0; transform: translateY(-30px); }
+  to { opacity: 1; transform: none; }
+}
+.hero h1 {
+  font-size: 3rem;
+  color: #3b82f6;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+  font-weight: 800;
+  text-shadow: 0 2px 8px #e0e7ff;
+}
+.hero p {
+  color: #555;
+  font-size: 1.25rem;
+  margin-bottom: 18px;
+}
+.search-bar input:focus {
+  outline: 2px solid #3b82f6;
+  border-color: #3b82f6;
+}
+.category {
+  box-shadow: 0 2px 8px rgba(59,130,246,0.07);
+  transition: transform 0.18s, background 0.2s, color 0.2s;
+}
+.category:active {
+  transform: scale(0.97);
+}
+.product-card {
+  overflow: hidden;
+  transition: box-shadow 0.2s, transform 0.18s;
+}
+.product-card:hover {
+  box-shadow: 0 8px 32px rgba(59,130,246,0.18);
+  transform: translateY(-6px) scale(1.03);
+}
+.product-img {
+  transition: transform 0.18s;
+}
+.product-card:hover .product-img {
+  transform: scale(1.08) rotate(-2deg);
+}
+.quick-view {
+  display: none;
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  background: rgba(59,130,246,0.97);
+  color: #fff;
+  padding: 12px 0 10px 0;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 0 0 12px 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.product-card:hover .quick-view {
+  display: block;
+}
+.quick-view:hover {
+  background: #2563eb;
+}
+.footer {
+  background: #f1f5f9;
+  color: #555;
+  text-align: center;
+  padding: 24px 0 12px 0;
+  font-size: 1rem;
+  margin-top: 40px;
+  border-top: 1px solid #e0e0e0;
+}
+/* --- E-commerce Home Enhancements --- */
+.featured-banner {
+    background: linear-gradient(90deg, #3b82f6 60%, #6366f1 100%);
+    color: #fff;
+    padding: 18px 0;
+    text-align: center;
+    font-size: 1.15rem;
+    font-weight: 500;
+    letter-spacing: 1px;
+}
+.hero {
+    background: linear-gradient(120deg, #e0e7ff 60%, #fff 100%);
+    padding: 48px 0 32px 0;
+    text-align: center;
+}
+.hero h1 {
+    font-size: 2.7rem;
+    color: #3b82f6;
+    margin-bottom: 10px;
+}
+.hero p {
+    color: #555;
+    font-size: 1.2rem;
+}
+.search-bar {
+    margin: 32px auto 0 auto;
+    max-width: 420px;
+    display: flex;
+}
+.search-bar input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px 0 0 6px;
+    font-size: 1rem;
+}
+.search-bar button {
+    padding: 12px 22px;
+    border: none;
+    background: #3b82f6;
+    color: #fff;
+    border-radius: 0 6px 6px 0;
+    font-size: 1rem;
+    cursor: pointer;
+}
+.categories {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+    margin: 36px 0 18px 0;
+    flex-wrap: wrap;
+}
+.category {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px 22px;
+    color: #3b82f6;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+.category:hover {
+    background: #3b82f6;
+    color: #fff;
+}
+.products {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 32px;
+    max-width: 1100px;
+    margin: 0 auto 40px auto;
+    padding: 0 18px;
+}
+.product-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(59,130,246,0.07);
+    padding: 18px 18px 22px 18px;
+    text-align: center;
+    transition: box-shadow 0.2s;
+    position: relative;
+}
+.product-card:hover {
+    box-shadow: 0 6px 24px rgba(59,130,246,0.13);
+}
+.product-img {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    margin-bottom: 12px;
+}
+.product-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #222;
+    margin-bottom: 6px;
+}
+.product-price {
+    color: #3b82f6;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+.product-badge {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background: #f59e42;
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 12px;
+    letter-spacing: 1px;
+}
+.product-rating {
+    margin-bottom: 8px;
+    color: #f59e42;
+    font-size: 1.05rem;
+}
+.add-btn {
+    background: #3b82f6;
+    color: #fff;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.add-btn:hover {
+    background: #2563eb;
+}
+.footer {
+    background: #f1f5f9;
+    color: #555;
+    text-align: center;
+    padding: 24px 0 12px 0;
+    font-size: 1rem;
+    margin-top: 40px;
+}
+@media (max-width: 700px) {
+    .products {
+        grid-template-columns: 1fr;
+    }
+}
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(120deg, #f8fafc 0%, #e0e7ff 100%);
+  min-height: 100vh;
+}
+nav {
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  padding: 0 0 0 0;
+}
+.menu {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 70px;
+}
+.logo h2 {
+  color: #3b82f6;
+  font-size: 2rem;
+  margin: 0;
+  letter-spacing: 1px;
+}
+ul {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+ul li {
+  margin-left: 28px;
+}
+ul li a {
+  text-decoration: none;
+  color: #222;
+  font-size: 1.1rem;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+ul li a:hover {
+  color: #3b82f6;
+}
+.profile-photo {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #3b82f6;
+  box-shadow: 0 2px 8px rgba(59,130,246,0.08);
+  background: #f1f5f9;
+}
+@media (max-width: 700px) {
+  .menu {
+    flex-direction: column;
+    align-items: flex-start;
+    height: auto;
+    padding: 12px;
+  }
+  ul {
+    flex-direction: column;
+    width: 100%;
+    margin-top: 10px;
+  }
+  ul li {
+    margin: 10px 0 0 0;
+  }
+}
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
 *{
     margin: 0;
@@ -105,5 +408,13 @@ body {
     background: white;
     color: black;
   }
+  .profile-photo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid white;
+}
+
   
   

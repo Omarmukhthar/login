@@ -1,3 +1,123 @@
+/* admin.css - Modern, clean, and responsive admin dashboard style */
+body {
+    background: #f4f6f9;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+.admin-container {
+    max-width: 1100px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    padding: 32px 40px 40px 40px;
+}
+h1 {
+    color: #222;
+    font-size: 2.2rem;
+    margin-bottom: 24px;
+    letter-spacing: 1px;
+}
+.admin-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+.btn, .create-btn {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    text-decoration: none;
+    margin-right: 10px;
+}
+.btn:hover, .create-btn:hover {
+    background: #0056b3;
+}
+.search-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.search-form input[type="text"] {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fafbfc;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+.user-table th, .user-table td {
+    padding: 14px 12px;
+    text-align: left;
+}
+.user-table th {
+    background: #f0f2f5;
+    color: #333;
+    font-weight: 600;
+    border-bottom: 2px solid #e0e0e0;
+}
+.user-table tr {
+    border-bottom: 1px solid #e0e0e0;
+}
+.user-table tr:last-child {
+    border-bottom: none;
+}
+.user-table td {
+    vertical-align: middle;
+}
+.profile-thumbnail {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #007bff;
+    background: #f4f6f9;
+}
+.actions {
+    display: flex;
+    gap: 8px;
+}
+.action-form {
+    display: inline-block;
+}
+.btn-edit {
+    background: #28a745;
+}
+.btn-edit:hover {
+    background: #1e7e34;
+}
+.delete-btn {
+    background: #dc3545;
+}
+.delete-btn:hover {
+    background: #a71d2a;
+}
+@media (max-width: 800px) {
+    .admin-container {
+        padding: 18px 6px;
+    }
+    .user-table th, .user-table td {
+        padding: 8px 4px;
+    }
+    .admin-actions {
+        flex-direction: column;
+        gap: 12px;
+    }
+}
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
 @import url('https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css');
 

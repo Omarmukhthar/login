@@ -4,25 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SignUp</title>
-
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/signup.css">
 </head>
 <body>
 
     <div class="form-container">
         <h2>SignUp</h2>
-        <form action="/signup" method="post">
+        <form action="/signup" method="post" enctype="multipart/form-data">
           <div class="form-group">
             <label for="name">Name:</label>
             <input type="text" id="name" name="username" placeholder="Enter your name" required autocomplete="off">
           </div>
           <div class="form-group">
-            <label for="password">password:</label>
-            <input type="password" id="password" name="password" placeholder="password" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" placeholder="Password" required>
+          </div>
+          <div class="form-group">
+            <label for="bio">Bio:</label>
+            <textarea id="bio" name="bio" placeholder="Write something about yourself..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="profilePicture">Profile Picture:</label>
+            <input type="file" id="profilePicture" name="profilePicture" accept="image/*">
           </div>
           
           <button type="submit" class="submit-btn">Submit</button>
         </form>
-      </div>
+    </div>
 </body>
 </html>

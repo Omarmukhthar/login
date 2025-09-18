@@ -3,36 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Home</title> 
+    <title>ShopEase - Home</title>
     <link rel="stylesheet" href="/stylehome.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"/>
-    <link rel="icon" type="image/x-icon" href="C:\Users\ibrah\AppData\Local\Temp\c5981583-436e-41eb-a3dc-df10a97a0910_favicon_package_v0.16.zip.910\favicon-32x32.png">
 </head>
-<body>    
-    <nav>
-        <div class="menu">
+<body>
+    <div class="featured-banner">
+        <span>🔥 Summer Sale! Up to 50% off on select items. Free shipping on orders over $50.</span>
+    </div>
+    <nav class="sticky-nav">
+      <div class="menu">
           <div class="logo">
-            <a href="#">Omar Mukhthar</a>
+            <h2>ShopEase</h2>
           </div>
           <ul>
-            <li><a href="#">Home</a></li>
-            <form action="/aboutme" method="post"></form>
-            <li><a href="aboutme">About Me</a></li>
-            <form action="/logout" method="post"></form>
-            <li><a href="/">Signout</a></li>
-            
+              <li><a href="/home">Home</a></li>
+              <li><a href="/aboutme">About Me</a></li>
+              <li>
+                  <a href="/profile">
+                      <img src="<%= profilePicture || '/default-profile.png' %>" 
+                           alt="Profile Photo" 
+                           class="profile-photo" 
+                           style="cursor: pointer;" />
+                  </a>
+              </li>
+              <li><a href="/cart">🛒 Cart (<%= cartCount || 0 %>)</a></li>
+              <li><a href="/signout">Signout</a></li>
           </ul>
-        </div>
-      </nav>
-      <div class="img"></div>
-      <div class="center">
-        <div class="title">This is my First backend project </div>
-        <div class="sub_title">Using NodeJs,ExpressJs,MongoDb</div>
-        <div class="btns">
-         > <button>Thank You</button>
-         
-        </div>
       </div>
-
+    </nav>
+    <div class="hero">
+        <h1>Welcome to ShopEase</h1>
+        <p>Your one-stop shop for the latest products and best deals!</p>
+        <form class="search-bar">
+            <input type="text" placeholder="Search for products..." />
+            <button type="submit">Search</button>
+        </form>
+    </div>
+    <div class="categories">
+        <div class="category">All</div>
+        <div class="category">Electronics</div>
+        <div class="category">Fashion</div>
+        <div class="category">Home</div>
+        <div class="category">Books</div>
+        <div class="category">Toys</div>
+    </div>
+    <div class="products">
+        <% products.forEach(function(product) { %>
+        <div class="product-card">
+            <% if (product.badge) { %>
+                <span class="product-badge" style="<%= product.badge === 'New' ? 'background:#10b981;' : (product.badge === 'Hot' ? 'background:#f43f5e;' : '') %>"><%= product.badge %></span>
+            <% } %>
+            <a href="/product/<%= product.id %>">
+                <img src="<%= product.image %>" class="product-img" alt="<%= product.title %>">
+            </a>
+            <div class="product-title"><%= product.title %></div>
+            <div class="product-rating">
+                <% for (let i = 1; i <= 5; i++) { %>
+                    <% if (product.rating >= i) { %>★<% } else if (product.rating >= i - 0.5) { %>☆<% } else { %>☆<% } %>
+                <% } %> (<%= product.rating %>)
+            </div>
+            <div class="product-price">$<%= product.price %></div>
+            <form action="/cart/add/<%= product.id %>" method="POST" style="margin-bottom:0;">
+                <button class="add-btn" type="submit">Add to Cart</button>
+            </form>
+            <a href="/product/<%= product.id %>" class="quick-view">Quick View</a>
+        </div>
+        <% }); %>
+    <div class="footer">
+        &copy; <%= new Date().getFullYear() %> ShopEase. All rights reserved. | Designed by ShopEase Team
+    </div>
+    </div>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="/stylehome.css">
+</head>
+<body>
+<nav>
+  <div class="menu">
+      <div class="logo">
+        <h2><%= username %></h2>
+      </div>
+      <ul>
+          <li><a href="/home">Home</a></li>
+          <li><a href="/aboutme">About Me</a></li>
+          <li>
+              <a href="/profile">
+                  <img src="<%= profilePicture || '/default-profile.png' %>" 
+                       alt="Profile Photo" 
+                       class="profile-photo" 
+                       style="cursor: pointer;" />
+              </a>
+          </li>
+          <li><a href="/signout">Signout</a></li>
+      </ul>
+  </div>
+    </nav>
 </body>
 </html>
