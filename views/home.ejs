@@ -1,108 +1,153 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShopEase - Home</title>
-    <link rel="stylesheet" href="/stylehome.css">
-</head>
-<body>
-    <div class="featured-banner">
-        <span>🔥 Summer Sale! Up to 50% off on select items. Free shipping on orders over $50.</span>
-    </div>
-    <nav class="sticky-nav">
-      <div class="menu">
-          <div class="logo">
-            <h2>ShopEase</h2>
-          </div>
-          <ul>
-              <li><a href="/home">Home</a></li>
-              <li><a href="/aboutme">About Me</a></li>
-              <li>
-                  <a href="/profile">
-                      <img src="<%= profilePicture || '/default-profile.png' %>" 
-                           alt="Profile Photo" 
-                           class="profile-photo" 
-                           style="cursor: pointer;" />
-                  </a>
-              </li>
-              <li><a href="/cart">🛒 Cart (<%= cartCount || 0 %>)</a></li>
-              <li><a href="/signout">Signout</a></li>
-          </ul>
-      </div>
-    </nav>
-    <div class="hero">
-        <h1>Welcome to ShopEase</h1>
-        <p>Your one-stop shop for the latest products and best deals!</p>
-        <form class="search-bar">
-            <input type="text" placeholder="Search for products..." />
-            <button type="submit">Search</button>
-        </form>
-    </div>
-    <div class="categories">
-        <div class="category">All</div>
-        <div class="category">Electronics</div>
-        <div class="category">Fashion</div>
-        <div class="category">Home</div>
-        <div class="category">Books</div>
-        <div class="category">Toys</div>
-    </div>
-    <div class="products">
-        <% products.forEach(function(product) { %>
-        <div class="product-card">
-            <% if (product.badge) { %>
-                <span class="product-badge" style="<%= product.badge === 'New' ? 'background:#10b981;' : (product.badge === 'Hot' ? 'background:#f43f5e;' : '') %>"><%= product.badge %></span>
-            <% } %>
-            <a href="/product/<%= product.id %>">
-                <img src="<%= product.image %>" class="product-img" alt="<%= product.title %>">
-            </a>
-            <div class="product-title"><%= product.title %></div>
-            <div class="product-rating">
-                <% for (let i = 1; i <= 5; i++) { %>
-                    <% if (product.rating >= i) { %>★<% } else if (product.rating >= i - 0.5) { %>☆<% } else { %>☆<% } %>
-                <% } %> (<%= product.rating %>)
+<%- include('partials/header', { title: 'Dashboard' }) %>
+
+    <!-- Main Content -->
+    <main class="container" style="min-height: calc(100vh - 80px); padding: var(--space-6) 0;">
+        <div class="container">
+            <!-- Welcome Section -->
+            <div class="text-center animate-fade-in mb-4">
+                <div class="mb-4">
+                    <img src="<%= profilePicture %>" alt="<%= username %>" class="profile-picture animate-pulse">
+                </div>
             </div>
-            <div class="product-price">$<%= product.price %></div>
-            <form action="/cart/add/<%= product.id %>" method="POST" style="margin-bottom:0;">
-                <button class="add-btn" type="submit">Add to Cart</button>
-            </form>
-            <a href="/product/<%= product.id %>" class="quick-view">Quick View</a>
+            <div class="grid responsive mb-6">
+                <!-- Profile Card -->
+                <div class="card animate-slide-in" style="animation-delay: 0.1s;">
+                    <div class="card-body text-center">
+                        <div class="mb-4">
+                            <i class="fas fa-user-circle" style="font-size: 3rem; color: var(--color-ink);"></i>
+                        </div>
+                        <h3 class="font-semibold mb-2">
+                            Your Profile
+                        </h3>
+                        <p class="text-muted mb-4">
+                            View and edit your personal information, bio, and profile picture.
+                        </p>
+                        <a href="/profile" class="btn btn-primary">
+                            <i class="fas fa-eye"></i>
+                            View Profile
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Settings Card -->
+                <div class="card">
+                    <div class="card-body text-center">
+                        <div class="mb-4">
+                            <i class="fas fa-cog" style="font-size: 3rem; color: var(--color-ink);"></i>
+                        </div>
+                        <h3 class="font-semibold mb-2">
+                            Account Settings
+                        </h3>
+                        <p class="text-muted mb-4">
+                            Manage your account preferences and security settings.
+                        </p>
+                        <a href="/profile" class="btn btn-outline">
+                            <i class="fas fa-user-cog"></i>
+                            Manage Account
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Actions Card -->
+                <div class="card animate-slide-in" style="animation-delay: 0.3s;">
+                    <div class="card-body text-center">
+                        <div class="mb-4">
+                            <i class="fas fa-bolt" style="font-size: 3rem; color: var(--color-ink);"></i>
+                        </div>
+                        <h3 class="font-semibold mb-2">
+                            Quick Actions
+                        </h3>
+                        <p class="text-muted mb-4">
+                            Access your most used features and settings quickly.
+                        </p>
+                        <div style="display: flex; gap: var(--space-2); justify-content: center;">
+                            <button onclick="window.location.href='/profile'" class="btn btn-sm btn-secondary">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="window.location.href='/signout'" class="btn btn-sm btn-secondary">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Section -->
+            <div class="card animate-fade-in" style="animation-delay: 0.4s;">
+                <div class="card-header">
+                    <h2 class="font-semibold"><i class="fas fa-chart-bar" style="margin-right: var(--space-2);"></i> Account Overview</h2>
+                </div>
+                <div class="card-body">
+                    <div class="grid responsive" style="gap: var(--space-4);">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-user" style="font-size: 2rem; color: var(--color-ink); margin-bottom: var(--space-2);"></i>
+                                <h4 class="font-semibold">Profile Complete</h4>
+                                <p class="text-muted">Your profile is set up and ready</p>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-shield-check" style="font-size: 2rem; color: var(--color-ink); margin-bottom: var(--space-2);"></i>
+                                <h4 class="font-semibold">Account Secure</h4>
+                                <p class="text-muted">Your account is protected</p>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-clock" style="font-size: 2rem; color: var(--color-ink); margin-bottom: var(--space-2);"></i>
+                                <h4 class="font-semibold">Active Session</h4>
+                                <p class="text-muted">You're currently logged in</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <% }); %>
-    <div class="footer">
-        &copy; <%= new Date().getFullYear() %> ShopEase. All rights reserved. | Designed by ShopEase Team
-    </div>
-    </div>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-    <link rel="stylesheet" href="/stylehome.css">
-</head>
-<body>
-<nav>
-  <div class="menu">
-      <div class="logo">
-        <h2><%= username %></h2>
-      </div>
-      <ul>
-          <li><a href="/home">Home</a></li>
-          <li><a href="/aboutme">About Me</a></li>
-          <li>
-              <a href="/profile">
-                  <img src="<%= profilePicture || '/default-profile.png' %>" 
-                       alt="Profile Photo" 
-                       class="profile-photo" 
-                       style="cursor: pointer;" />
-              </a>
-          </li>
-          <li><a href="/signout">Signout</a></li>
-      </ul>
-  </div>
-    </nav>
+    </main>
+
+    <!-- Footer -->
+    <footer style="background: var(--gray-50); border-top: 1px solid var(--gray-200); padding: var(--space-6) 0; margin-top: var(--space-12);">
+        <div class="container text-center">
+            <p style="color: var(--gray-600); font-size: var(--font-size-sm);">
+                © 2024 Modern App. Built with ❤️ for a better user experience.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Add smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Add loading states to buttons
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (this.href && !this.href.includes('#')) {
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+                    this.disabled = true;
+                }
+            });
+        });
+
+        // Add hover effects to cards
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-4px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
 </body>
 </html>

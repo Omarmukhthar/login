@@ -1,0 +1,35 @@
+/* Common Styles - Minimalist */
+@import url('base.css');
+
+/* Normalize spacing and typography using base tokens */
+
+body { margin:0; font-family: var(--font-family-sans); }
+
+.container { max-width: var(--container-max); margin: 0 auto; padding: var(--space-3); }
+
+/* Card - subtle border only, no shadows or lifts */
+.card { background: var(--color-bg); border-radius: var(--radius-sm); border:1px solid var(--color-muted); }
+.card-header { padding: var(--space-3); border-bottom: 1px solid var(--color-muted); font-weight:600; }
+.card-body { padding: var(--space-3); }
+.card-footer { padding: var(--space-3); border-top: 1px solid var(--color-muted); }
+
+.form-group { margin-bottom: var(--space-3); }
+.form-label { display:block; margin-bottom: var(--space-1); font-weight:500; color:var(--color-ink); }
+.form-input { width:100%; padding: calc(var(--space-1)) calc(var(--space-2)); border:1px solid var(--color-muted); border-radius: var(--radius-sm); }
+.form-input:focus { outline:2px solid var(--color-ink); outline-offset:2px; }
+
+.btn { display:inline-flex; align-items:center; justify-content:center; gap:var(--space-2); padding: calc(var(--space-1)) var(--space-3); border-radius:var(--radius-sm); }
+.btn-primary { background:var(--color-ink); color:var(--color-bg); border:1px solid var(--color-ink); }
+.btn-secondary { background:transparent; color:var(--color-ink); border:1px solid var(--color-muted); }
+
+/* Remove heavy animations; keep small fades if desired */
+.animate-fade-in { animation: none; }
+
+/* Utilities */
+.text-center { text-align:center; }
+.text-muted { color: var(--color-muted); }
+
+@media (max-width: 768px) {
+  .container { padding: var(--space-2); }
+  .card-header, .card-body, .card-footer { padding: var(--space-2); }
+}

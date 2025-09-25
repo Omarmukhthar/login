@@ -1,19 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile</title>
-    <link rel="stylesheet" href="/profile.css">
-</head>
-<body>
-    <div class="profile-container">
-        <div class="profile-header">
-            <img src="<%= profilePicture %>" alt="Profile Picture" class="profile-picture">
-            <h2><%= username %></h2>
+<%- include('partials/header', { title: 'Profile' }) %>
+    <main class="min-h-screen py-8">
+        <div class="container">
+            <!-- Profile Header -->
+            <div class="card animate-fade-in mb-8">
+                <div class="card-body text-center py-8">
+                    <div style="margin-bottom: var(--space-4);">
+                        <img src="<%= profilePicture %>" alt="<%= username %>" class="profile-picture-lg" style="border-radius:50%; width:96px; height:96px; object-fit:cover;">
+                    </div>
+                    
+                    <h1 class="font-size-4xl font-bold text-gray-800 mb-2">
+                        <%= username %>
+                    </h1>
+                    
+                    <div>
+                        <a href="/home" class="btn btn-primary">
+                            <i class="fas fa-arrow-left"></i>
+                            Back to Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bio Section -->
+            <div class="card animate-fade-in mb-8">
+                <div class="card-body py-6">
+                    <h2 class="font-size-xl font-semibold text-gray-800 mb-4">
+                        Bio
+                    </h2>
+                    <textarea class="form-input w-full mb-4 min-h-30" placeholder="Enter your bio here..."></textarea>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Save Bio
+                    </button>
+                    <a href="/profile/change-password" class="btn btn-secondary mt-4 block text-center">
+                        <i class="fas fa-key"></i>
+                        Change Password
+                    </a>
+                </div>
+            </div>
         </div>
-        <p class="bio"><%= bio %></p>
-        <a href="/home" class="back-btn">Back to Home</a>
-    </div>
-</body>
-</html>
+    </main>
+  <%- include('partials/footer') %>

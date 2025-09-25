@@ -1,31 +1,279 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+<%- include('partials/header', { title: 'Login' }) %>
+    <div class="container">
+        <div class="card animate-fade-in">
+            <div class="card-header text-center">
+                <div>
+                <%- include('partials/footer') %>
+                <h1>
+                    Welcome Back
+                </h1>
+                <p>
+                    Sign in to your account to continue
+                </p>
+            </div>
+            
+            <div class="card-body">
+                <form action="/login" method="post" id="loginForm">
+                    <input type="hidden" name="csrfToken" value="<%= csrfToken %>">
+                    <div class="form-group">
+                        <label for="name" class="form-label">
+                            <i class="fas fa-user"></i>
+                            Username
+                        </label>
+                        <input 
+                            type="text" 
+                            id="name" 
+                            name="username" 
+                            class="form-input" 
+                            placeholder="Enter your username" 
+                            required 
+                            autocomplete="off">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password" class="form-label">
+                            <i class="fas fa-lock"></i>
+                            Password
+                        </label>
+                        <div>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                class="form-input" 
+                                placeholder="Enter your password" 
+                            required
+                                minlength="8"
+                                autocomplete="current-password">
+                            <button 
+                                type="button" 
+                                onclick="togglePasswordVisibility(this.id)">
+                                <i class="fas fa-eye" id="passwordToggleIcon"></i>
+                            </button>
+                        </div>
+                        <div>
+                            <div>
+                                <input type="checkbox" id="rememberMe" name="rememberMe">
+                                <label for="rememberMe">
+                                    Remember me for 30 days
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Sign In
+                    </button>
+                </form>
+            </div>
+            
+            <div class="card-footer text-center">
+                <p>
+                    Don't have an account? 
+                    <a href="/signup" class="text-primary font-medium">
+                        Create one here
+                    </a>
+                </p>
+                <div>
+                    <a href="/admin" class="btn btn-outline btn-sm">
+                        <i class="fas fa-shield-alt"></i>
+                        Admin Access
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <link rel="stylesheet" href="/style.css">
-</head>
-<body>
+    <script>
+        // Password visibility toggle
+        function togglePasswordVisibility(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(inputId + 'ToggleIcon');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
 
-    <div class="form-container">
-        <h2>Login</h2>
-        <form action="/login" method="post">
-          <div class="form-group">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="username" placeholder="Enter your name" required autocomplete="off">
-          </div>
-          <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" placeholder="Password" required>
-          </div>
-          
-          <button type="submit" class="submit-btn">Login</button>
-        </form>
-        <p>Don't have an account? <a class="link" href="/signup">SignUp</a></p>
-        <p><a class="link" href="/admin">Login as Admin</a></p>
-      </div>
-    
+        // Rate limiting simulation
+        let loginAttempts = 0;
+        const maxAttempts = 5;
+        const lockoutTime = 15 * 60 * 1000; // 15 minutes
+
+        // Check for existing lockout
+        const lockoutUntil = localStorage.getItem('loginLockout');
+        if (lockoutUntil && Date.now() < parseInt(lockoutUntil)) {
+            const remainingTime = Math.ceil((parseInt(lockoutUntil) - Date.now()) / 60000);
+            alert(`Account temporarily locked. Please try again in ${remainingTime} minutes.`);
+            document.querySelector('form').style.display = 'none';
+        }
+
+        // Enhanced form validation
+        function validateForm() {
+            const username = document.getElementById('name').value.trim();
+            const password = document.getElementById('password').value;
+            
+            // Username validation
+            if (username.length < 3) {
+                showError('Username must be at least 3 characters long');
+                return false;
+            }
+            
+            if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+                showError('Username can only contain letters, numbers, and underscores');
+                return false;
+            }
+            
+            // Password validation
+            if (password.length < 8) {
+                showError('Password must be at least 8 characters long');
+                return false;
+            }
+            
+            if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
+                showError('Password must contain at least one uppercase letter, one lowercase letter, and one number');
+                return false;
+            }
+            
+            return true;
+        }
+
+        // Show error message
+        function showError(message) {
+            // Remove existing error message
+            const existingError = document.querySelector('.error-message');
+            if (existingError) {
+                existingError.remove();
+            }
+            
+            // Create new error message
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.style.cssText = `
+                background: var(--error-500);
+                color: white;
+                padding: var(--space-3);
+                border-radius: var(--radius-md);
+                margin-bottom: var(--space-4);
+                font-size: var(--font-size-sm);
+                text-align: center;
+            `;
+            errorDiv.textContent = message;
+            
+            // Insert before form
+            const form = document.querySelector('form');
+            form.parentNode.insertBefore(errorDiv, form);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (errorDiv.parentNode) {
+                    errorDiv.remove();
+                }
+            }, 5000);
+        }
+
+        // Add loading state to form submission
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Check for lockout
+            const lockoutUntil = localStorage.getItem('loginLockout');
+            if (lockoutUntil && Date.now() < parseInt(lockoutUntil)) {
+                showError('Account temporarily locked due to too many failed attempts');
+                return;
+            }
+            
+            // Validate form
+            if (!validateForm()) {
+                return;
+            }
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing In...';
+            submitBtn.disabled = true;
+            
+            // Simulate rate limiting
+            setTimeout(() => {
+                // In a real application, this would be handled by the server
+                // For now, we'll just submit the form
+                this.submit();
+            }, 1000);
+        });
+
+        // Add focus effects and security indicators
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('animate-pulse');
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('animate-pulse');
+            });
+            
+            // Add security indicators
+            input.addEventListener('input', function() {
+                if (this.id === 'password') {
+                    const strength = calculatePasswordStrength(this.value);
+                    updatePasswordSecurityIndicator(strength);
+                }
+            });
+        });
+
+        // Password strength calculation
+        function calculatePasswordStrength(password) {
+            let strength = 0;
+            if (password.length >= 8) strength += 25;
+            if (/[a-z]/.test(password)) strength += 25;
+            if (/[A-Z]/.test(password)) strength += 25;
+            if (/\d/.test(password)) strength += 25;
+            return strength;
+        }
+
+        // Update password security indicator
+        function updatePasswordSecurityIndicator(strength) {
+            let indicator = document.getElementById('passwordSecurityIndicator');
+            if (!indicator) {
+                indicator = document.createElement('div');
+                indicator.id = 'passwordSecurityIndicator';
+                indicator.style.cssText = `
+                    margin-top: var(--space-2);
+                    font-size: var(--font-size-xs);
+                    color: var(--gray-500);
+                `;
+                document.getElementById('password').parentNode.appendChild(indicator);
+            }
+            
+            if (strength < 50) {
+                indicator.textContent = 'Password strength: Weak';
+                indicator.style.color = 'var(--error-500)';
+            } else if (strength < 75) {
+                indicator.textContent = 'Password strength: Medium';
+                indicator.style.color = 'var(--warning-500)';
+            } else {
+                indicator.textContent = 'Password strength: Strong';
+                indicator.style.color = 'var(--success-500)';
+            }
+        }
+
+        // Add keyboard security (disable right-click context menu)
+        document.addEventListener('contextmenu', function(e) {
+            if (e.target.type === 'password') {
+                e.preventDefault();
+            }
+        });
+
+        // Add copy/paste protection for password field
+        document.getElementById('password').addEventListener('paste', function(e) {
+            e.preventDefault();
+            showError('Pasting passwords is disabled for security reasons');
+        });
+    </script>
 </body>
 </html>

@@ -1,5 +1,3 @@
-// Example: Export your MongoDB collection or model here
-// Replace the following with your actual MongoDB connection and collection/model
 const { MongoClient } = require('mongodb');
 const uri = process.env.MONGO_URI || 'mongodb://localhost:27017';
 const client = new MongoClient(uri);
@@ -18,12 +16,7 @@ async function connectDB() {
             throw err;
         }
     }
-<<<<<<< HEAD
     return collection;
 }
-=======
-    
-});
->>>>>>> ec867de18a80236e2b318efa1eba9ec97ba5b1d7
 
 module.exports = { connectDB };

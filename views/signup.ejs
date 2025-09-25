@@ -1,35 +1,475 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SignUp</title>
-    <link rel="stylesheet" href="/signup.css">
-</head>
-<body>
+<%- include('partials/header', { title: 'Sign Up' }) %>
+    <div class="hero center" style="min-height:100vh; padding: var(--space-4) 0; display:flex; align-items:center; justify-content:center;">
+        <div class="card animate-fade-in" style="max-width:500px; width:100%;">
+            <div class="card-header text-center">
+                        <div class="mb-4">
+                            <i class="fas fa-user-plus" style="font-size: 3rem; color: var(--color-ink);"></i>
+                        </div>
+                <h1 class="font-bold">Create Account</h1>
+                <p class="text-muted">Join us and start your journey</p>
+            </div>
 
-    <div class="form-container">
-        <h2>SignUp</h2>
-        <form action="/signup" method="post" enctype="multipart/form-data">
-          <div class="form-group">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="username" placeholder="Enter your name" required autocomplete="off">
-          </div>
-          <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" placeholder="Password" required>
-          </div>
-          <div class="form-group">
-            <label for="bio">Bio:</label>
-            <textarea id="bio" name="bio" placeholder="Write something about yourself..."></textarea>
-          </div>
-          <div class="form-group">
-            <label for="profilePicture">Profile Picture:</label>
-            <input type="file" id="profilePicture" name="profilePicture" accept="image/*">
-          </div>
-          
-          <button type="submit" class="submit-btn">Submit</button>
-        </form>
+            <div class="card-body">
+                <form action="/signup" method="post" enctype="multipart/form-data" id="signupForm">
+                    <input type="hidden" name="csrfToken" value="<%= csrfToken %>">
+                    <div class="form-group">
+                        <label for="name" class="form-label">
+                            <i class="fas fa-user" style="margin-right: var(--space-2);"></i>
+                            Username
+                        </label>
+                        <input 
+                            type="text" 
+                            id="name" 
+                            name="username" 
+                            class="form-input" 
+                            placeholder="Choose a unique username" 
+                            required 
+                            autocomplete="off"
+                            minlength="3"
+                            maxlength="20"
+                            pattern="^[a-zA-Z0-9_]+$"
+                        >
+                        <div id="usernameValidation" class="form-help" aria-live="polite"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password" class="form-label">
+                            <i class="fas fa-lock" style="margin-right: var(--space-2);"></i>
+                            Password
+                        </label>
+                        <div class="input-with-icon">
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                class="form-input" 
+                                placeholder="Create a strong password" 
+                                required
+                                minlength="8"
+                                autocomplete="new-password"
+                            >
+                            <button type="button" onclick="togglePasswordVisibility('password')" class="icon-btn" aria-label="Toggle password visibility"><i class="fas fa-eye" id="passwordToggleIcon"></i></button>
+                        </div>
+                        <div class="form-help mt-2">
+                            <div class="password-strength"><div class="strength-bar"></div></div>
+                            <p class="password-text">Password strength: Weak</p>
+                        </div>
+                            <div id="passwordRequirements" class="form-help mt-2">
+                            <div class="text-muted mb-1">Password requirements:</div>
+                            <div id="req-length" class="req-item">• At least 8 characters</div>
+                            <div id="req-lowercase" class="req-item">• One lowercase letter</div>
+                            <div id="req-uppercase" class="req-item">• One uppercase letter</div>
+                            <div id="req-number" class="req-item">• One number</div>
+                            <div id="req-special" class="req-item">• One special character (!@#$%^&*)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmPassword" class="form-label">
+                            <i class="fas fa-lock" style="margin-right: var(--space-2);"></i>
+                            Confirm Password
+                        </label>
+                        <div class="input-with-icon">
+                            <input 
+                                type="password" 
+                                id="confirmPassword" 
+                                name="confirmPassword" 
+                                class="form-input" 
+                                placeholder="Confirm your password" 
+                                required
+                                autocomplete="new-password"
+                            >
+                            <button 
+                                type="button" 
+                                onclick="togglePasswordVisibility('confirmPassword')" 
+                                style="position: absolute; right: var(--space-3); top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--gray-500); cursor: pointer;"
+                            >
+                                <i class="fas fa-eye" id="confirmPasswordToggleIcon"></i>
+                            </button>
+                        </div>
+                        <div id="passwordMatch" style="margin-top: var(--space-1); font-size: var(--font-size-xs);"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bio" class="form-label">
+                            <i class="fas fa-quote-left" style="margin-right: var(--space-2);"></i>
+                            Bio (Optional)
+                        </label>
+                        <textarea 
+                            id="bio" 
+                            name="bio" 
+                            class="form-input form-textarea" 
+                            placeholder="Tell us something about yourself..."
+                            rows="3"
+                        ></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="profilePicture" class="form-label">
+                            <i class="fas fa-camera" style="margin-right: var(--space-2);"></i>
+                            Profile Picture (Optional)
+                        </label>
+                        <div class="input-file">
+                            <input 
+                                type="file" 
+                                id="profilePicture" 
+                                name="profilePicture" 
+                                class="form-input form-file" 
+                                accept="image/*"
+                                onchange="previewImage(this)"
+                            >
+                            <div id="imagePreview" class="image-preview" aria-hidden="true">
+                                <img id="previewImg" class="preview-img">
+                                <p class="text-muted small mt-2">Preview</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group mt-4">
+                        <div class="checkbox-row">
+                            <input type="checkbox" id="termsAccepted" name="termsAccepted" required>
+                            <label for="termsAccepted">I agree to the <a href="#" onclick="showTermsModal()" class="link">Terms of Service</a> and <a href="#" onclick="showPrivacyModal()" class="link">Privacy Policy</a></label>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-lg full-width mt-2" id="submitBtn" disabled>
+                        <i class="fas fa-user-plus"></i>
+                        Create Account
+                    </button>
+                </form>
+            </div>
+            
+      <div class="card-footer text-center">
+        <p class="text-muted">Already have an account? <a href="/" class="link">Sign in here</a></p>
+      </div>
+        </div>
     </div>
-</body>
-</html>
+
+    <!-- Terms and Privacy Modals -->
+    <div id="termsModal" class="modal" aria-hidden="true">
+      <div class="modal-content card" role="dialog" aria-modal="true" style="max-width:600px; width:90%;">
+        <div class="card-header"><h3>Terms of Service</h3></div>
+        <div class="card-body"><div class="text-muted" style="line-height:1.6;"> ... Terms content ... </div></div>
+        <div class="card-footer"><button onclick="closeModal('termsModal')" class="btn btn-primary">Close</button></div>
+      </div>
+    </div>
+
+    <div id="privacyModal" class="modal" aria-hidden="true">
+      <div class="modal-content card" role="dialog" aria-modal="true" style="max-width:600px; width:90%;">
+        <div class="card-header"><h3>Privacy Policy</h3></div>
+        <div class="card-body"><div class="text-muted" style="line-height:1.6;"> ... Privacy content ... </div></div>
+        <div class="card-footer"><button onclick="closeModal('privacyModal')" class="btn btn-primary">Close</button></div>
+      </div>
+    </div>
+
+    <script>
+        // Password visibility toggle
+        function togglePasswordVisibility(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(inputId + 'ToggleIcon');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // Modal functions
+        function showTermsModal() {
+            document.getElementById('termsModal').style.display = 'flex';
+        }
+
+        function showPrivacyModal() {
+            document.getElementById('privacyModal').style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Enhanced password strength indicator
+        function updatePasswordStrength(password) {
+            const strengthBar = document.querySelector('.strength-bar');
+            const strengthText = document.querySelector('.password-text');
+            
+            let strength = 0;
+            let color = '';
+            let text = '';
+            
+            // Check requirements
+            const hasLength = password.length >= 8;
+            const hasLowercase = /[a-z]/.test(password);
+            const hasUppercase = /[A-Z]/.test(password);
+            const hasNumber = /\d/.test(password);
+            const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+            
+            // Update requirement indicators
+            updateRequirementIndicator('req-length', hasLength);
+            updateRequirementIndicator('req-lowercase', hasLowercase);
+            updateRequirementIndicator('req-uppercase', hasUppercase);
+            updateRequirementIndicator('req-number', hasNumber);
+            updateRequirementIndicator('req-special', hasSpecial);
+            
+            // Calculate strength
+            if (hasLength) strength += 20;
+            if (hasLowercase) strength += 20;
+            if (hasUppercase) strength += 20;
+            if (hasNumber) strength += 20;
+            if (hasSpecial) strength += 20;
+            
+            if (strength < 40) {
+                color = 'var(--error-500)';
+                text = 'Very Weak';
+            } else if (strength < 60) {
+                color = 'var(--error-500)';
+                text = 'Weak';
+            } else if (strength < 80) {
+                color = 'var(--warning-500)';
+                text = 'Medium';
+            } else if (strength < 100) {
+                color = 'var(--success-500)';
+                text = 'Strong';
+            } else {
+                color = 'var(--success-500)';
+                text = 'Very Strong';
+            }
+            
+            strengthBar.style.width = strength + '%';
+            strengthBar.style.backgroundColor = color;
+            strengthText.textContent = 'Password strength: ' + text;
+        }
+
+        function updateRequirementIndicator(elementId, met) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.style.color = met ? 'var(--success-500)' : 'var(--error-500)';
+            }
+        }
+
+        // Username validation
+        function validateUsername(username) {
+            const validationDiv = document.getElementById('usernameValidation');
+            validationDiv.innerHTML = ''; // Clear previous messages
+            
+            let isValid = true;
+
+            if (username.length < 3) {
+                validationDiv.innerHTML += 'Username must be at least 3 characters <i class="fas fa-times-circle" style="color: var(--error-500);"></i><br>';
+                validationDiv.style.color = 'var(--error-500)';
+                isValid = false;
+            }
+            
+            if (username.length > 20) {
+                validationDiv.innerHTML += 'Username must be less than 20 characters <i class="fas fa-times-circle" style="color: var(--error-500);"></i><br>';
+                validationDiv.style.color = 'var(--error-500)';
+                isValid = false;
+            }
+            
+            if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+                validationDiv.innerHTML += 'Username can only contain letters, numbers, and underscores <i class="fas fa-times-circle" style="color: var(--error-500);"></i><br>';
+                validationDiv.style.color = 'var(--error-500)';
+                isValid = false;
+            }
+            
+            // Check for common usernames
+            const commonUsernames = ['admin', 'administrator', 'root', 'user', 'test', 'guest'];
+            if (commonUsernames.includes(username.toLowerCase())) {
+                validationDiv.innerHTML += 'This username is not available <i class="fas fa-times-circle" style="color: var(--error-500);"></i><br>';
+                validationDiv.style.color = 'var(--error-500)';
+                isValid = false;
+            }
+            
+            if (isValid) {
+                validationDiv.innerHTML = 'Username looks good! <i class="fas fa-check-circle" style="color: var(--success-500);"></i>';
+                validationDiv.style.color = 'var(--success-500)';
+            }
+            
+            return isValid;
+        }
+
+        // Password confirmation validation
+        function validatePasswordMatch() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const matchDiv = document.getElementById('passwordMatch');
+            
+            if (confirmPassword.length === 0) {
+                matchDiv.innerHTML = '';
+                return false;
+            }
+            
+            if (password === confirmPassword) {
+                matchDiv.innerHTML = 'Passwords match <i class="fas fa-check-circle" style="color: var(--success-500);"></i>';
+                matchDiv.style.color = 'var(--success-500)';
+                return true;
+            } else {
+                matchDiv.innerHTML = 'Passwords do not match <i class="fas fa-times-circle" style="color: var(--error-500);"></i>';
+                matchDiv.style.color = 'var(--error-500)';
+                return false;
+            }
+        }
+
+        // Form validation
+        function validateForm() {
+            const username = document.getElementById('name').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const termsAccepted = document.getElementById('termsAccepted').checked;
+            
+            const usernameValid = validateUsername(username);
+            const passwordMatch = validatePasswordMatch();
+            const passwordStrong = password.length >= 8 && /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password);
+            
+            const submitBtn = document.getElementById('submitBtn');
+            
+            if (usernameValid && passwordStrong && passwordMatch && termsAccepted) {
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+            } else {
+                submitBtn.disabled = true;
+                submitBtn.style.opacity = '0.6';
+            }
+        }
+
+        // Image preview with security validation
+        function previewImage(input) {
+            const preview = document.getElementById('imagePreview');
+            const previewImg = document.getElementById('previewImg');
+            
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                
+                // Validate file type
+                if (!file.type.startsWith('image/')) {
+                    alert('Please select a valid image file');
+                    input.value = '';
+                    return;
+                }
+                
+                // Validate file size (max 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Image size must be less than 5MB');
+                    input.value = '';
+                    return;
+                }
+                
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                
+                reader.readAsDataURL(file);
+            } else {
+                preview.style.display = 'none';
+            }
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Password strength
+            document.getElementById('password').addEventListener('input', function() {
+                updatePasswordStrength(this.value);
+                validateForm();
+            });
+
+            // Username validation
+            document.getElementById('name').addEventListener('input', function() {
+                validateUsername(this.value);
+                validateForm();
+            });
+
+            // Password confirmation
+            document.getElementById('confirmPassword').addEventListener('input', function() {
+                validatePasswordMatch();
+                validateForm();
+            });
+
+            // Terms checkbox
+            document.getElementById('termsAccepted').addEventListener('change', function() {
+                validateForm();
+            });
+
+            // Form submission with enhanced validation
+            document.getElementById('signupForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const username = document.getElementById('name').value.trim();
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                const termsAccepted = document.getElementById('termsAccepted').checked;
+                
+                // Final validation
+                if (!validateUsername(username)) {
+                    alert('Please fix the username requirements');
+                    return;
+                }
+                
+                if (password.length < 8 || !/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
+                    alert('Password does not meet security requirements');
+                    return;
+                }
+                
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match');
+                    return;
+                }
+                
+                if (!termsAccepted) {
+                    alert('Please accept the Terms of Service and Privacy Policy');
+                    return;
+                }
+                
+                const submitBtn = this.querySelector('button[type="submit"]');
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+                submitBtn.disabled = true;
+                
+                // Submit form
+                setTimeout(() => {
+                    this.submit();
+                }, 1000);
+            });
+
+            // Close modals on outside click
+            document.getElementById('termsModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal('termsModal');
+                }
+            });
+
+            document.getElementById('privacyModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal('privacyModal');
+                }
+            });
+
+            // Add focus effects
+            document.querySelectorAll('.form-input').forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.classList.add('animate-pulse');
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.parentElement.classList.remove('animate-pulse');
+                });
+            });
+
+            // Disable paste on password fields for security
+            document.getElementById('password').addEventListener('paste', function(e) {
+                e.preventDefault();
+                alert('Pasting passwords is disabled for security reasons');
+            });
+
+            document.getElementById('confirmPassword').addEventListener('paste', function(e) {
+                e.preventDefault();
+                alert('Pasting passwords is disabled for security reasons');
+            });
+        });
+    </script>
+    <%- include('partials/footer') %>

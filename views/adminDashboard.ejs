@@ -1,133 +1,320 @@
-<<<<<<< HEAD
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="/admin.css">
-</head>
-<body>
-    <div class="admin-container">
-        <h1>User Management</h1>
-        <div class="admin-actions">
-            <a href="/admin/dashboard" class="btn">Create New User</a>
-            <form action="/admin/search" method="GET" class="search-form">
-                <input type="text" name="username" placeholder="Search users...">
-                <button type="submit">Search</button>
-            </form>
-        </div>
+<%- include('partials/header', { title: 'Admin Dashboard' }) %>
 
-        <table class="user-table">
-            <thead>
-                <tr>
-                    <th>Username</th>
-                    <th>Bio</th>
-                    <th>Profile Picture</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% users.forEach(user => { %>
-                <tr>
-                    <td><%= user.name %></td>
-                    <td><%= user.bio %></td>
-                    <td>
-                        <% if (user.profilePicture) { %>
-                            <img src="<%= user.profilePicture %>" class="profile-thumbnail">
-                        <% } %>
-                    </td>
-                    <td class="actions">
-                        <form action="/admin/edit" method="POST" class="action-form">
-                            <input type="hidden" name="id" value="<%= user._id %>">
-                            <input type="text" name="username" value="<%= user.name %>">
-                            <input type="password" name="password" placeholder="New password">
-                            <button type="submit" class="btn btn-edit">Update</button>
-                        </form>
-                        <form action="/admin/delete" method="POST" class="action-form">
-                            <input type="hidden" name="id" value="<%= user._id %>">
-                            <button type="submit" class="btn delete-btn">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-                <% }) %>
-            </tbody>
-        </table>
+<main class="container pad-y-6">
+  <div class="container">
+            <!-- Alert Message Display -->
+            <div id="alertMessage" class="admin-alert hidden"></div>
+
+            <!-- Dashboard Header -->
+            <div class="card-header text-center">
+              <h1 class="font-bold"><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h1>
+              <p class="text-muted">Manage users and monitor system activity</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="admin-stats-grid mt-4">
+              <div class="card text-center">
+                <i class="fas fa-users"></i>
+                <h3><%= users.length %></h3>
+                <p>Total Users</p>
+              </div>
+
+              <div class="card text-center">
+                <i class="fas fa-user-check"></i>
+                <h3><%= users.filter(user => user.bio && user.bio.trim() !== '').length %></h3>
+                <p>Active Profiles</p>
+              </div>
+
+              <div class="card text-center">
+                <i class="fas fa-shield-check"></i>
+                <h3>Secure</h3>
+                <p>System Status</p>
+              </div>
+            </div>
+
+            <!-- User Management Section -->
+                        <div class="card mt-6">
+                            <div class="card-header">
+                                <h2 class="font-semibold"><i class="fas fa-users-cog"></i> User Management</h2>
+                                <div class="admin-actions mt-2 flex gap-3 align-center justify-between">
+                                    <form action="/admin/search" method="get" class="form-inline">
+                                        <input type="text" name="username" placeholder="Search users..." value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>" class="form-input">
+                                    </form>
+
+                                    <a href="/createuser" class="btn btn-primary"><i class="fas fa-user-plus"></i> Create User</a>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>User</th>
+                                                <th>Bio</th>
+                                                <th>Profile</th>
+                                                <th class="text-center">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% users.forEach((user, index) => { %>
+                                            <tr>
+                                                <td><%= index + 1 %></td>
+                                                <td>
+                                                    <div class="user-info">
+                                                        <div class="user-avatar"><i class="fas fa-user"></i></div>
+                                                        <div>
+                                                            <div class="user-name"><%= user.name %></div>
+                                                            <div class="user-role">User Account</div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="user-bio">
+                                                        <% if (user.bio && user.bio.trim() !== '') { %>
+                                                            <%= user.bio.length > 50 ? user.bio.substring(0, 50) + '...' : user.bio %>
+                                                        <% } else { %>
+                                                            <span class="text-muted italic">No bio provided</span>
+                                                        <% } %>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <% if (user.profilePicture) { %>
+                                                        <img src="<%= user.profilePicture %>" class="profile-img">
+                                                    <% } else { %>
+                                                        <img src="/default-profile.png" class="profile-img">
+                                                    <% } %>
+                                                </td>
+                                                <td>
+                                                    <div class="action-buttons">
+                                                        <button onclick="openEditModal('<%= user._id %>', '<%= user.name %>')" class="btn btn-secondary" aria-label="Edit <%= user.name %>"><i class="fas fa-edit"></i></button>
+                                                        <button onclick="confirmDeleteUser('<%= user._id %>', '<%= user.name %>', '<%= csrfToken %>')" class="btn btn-danger" aria-label="Delete <%= user.name %>"><i class="fas fa-trash"></i></button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <% }) %>
+                                        </tbody>
+                                    </table>
+
+                                    <% if (users.length === 0) { %>
+                                        <div class="text-center pad-y-6">
+                                            <i class="fas fa-users fs-2"></i>
+                                            <h3>No Users Found</h3>
+                                            <p>Start by creating your first user account.</p>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+        </div>
     </div>
-</body>
-</html>
-=======
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="/admin.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"/>
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
-</head>
-<body>
-    <div class="dashboard-container">
-        <header>
-            <h1>Admin Dashboard</h1>
-        </header>
-        <section>
-            <h2>User Management</h2>
-            <div class="search-container">
-                <form action="/admin/search" method="get" class="search-form">
-                    <input type="text" name="username" placeholder="Search for users..." value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>">
-                    <button type="submit" class="search-btn"><i class="fa fa-search"></i></button>
+</main>
+
+<%- include('partials/footer') %>
+
+    <!-- Edit User Modal -->
+    <div id="editModal" class="admin-modal-overlay hidden">
+        <div class="admin-modal-content">
+            <div class="admin-modal-header">
+                <h3>
+                    <i class="fas fa-user-edit"></i>
+                    Edit User
+                </h3>
+                <button type="button" class="admin-modal-close" onclick="closeEditModal()">
+                    &times;
+                </button>
+            </div>
+            <div class="admin-modal-body">
+                <form id="editForm" action="/admin/edit" method="post">
+                    <input type="hidden" name="csrfToken" value="<%= csrfToken %>">
+                    <input type="hidden" id="editUserId" name="id">
+                    
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">
+                            <i class="fas fa-user"></i>
+                            Username
+                        </label>
+                        <input type="text" id="editUsername" name="username" class="admin-form-input" required>
+                    </div>
+                    
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">
+                            <i class="fas fa-lock"></i>
+                            New Password
+                        </label>
+                        <input type="password" id="editPassword" name="password" class="admin-form-input" required>
+                        <div class="admin-password-strength">
+                            <div class="admin-strength-bar">
+                                <div></div>
+                            </div>
+                            <p class="admin-password-text">
+                                Password strength: Weak
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-modal-footer">
+                        <button type="submit" class="admin-btn admin-btn-primary">
+                            <i class="fas fa-save"></i>
+                            Save Changes
+                        </button>
+                        <button type="button" onclick="closeEditModal()" class="admin-btn admin-btn-secondary">
+                            <i class="fas fa-times"></i>
+                            Cancel
+                        </button>
+                    </div>
                 </form>
             </div>
-            <div class="add-User">
-                <a href="/createuser" class="add-user-btn">
-                    <i class="fa-solid fa-user-plus"></i>
-                </a>
-            </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Serial No.</th>
-                        <th>Username</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% users.forEach((user, index) => { %>
-                    <tr>
-                        <td><%= index + 1 %></td>
-                        <td><%= user.name %></td>
-                        <td>
-                            <form action="/admin/edit" method="post" class="action-form">
-                                <input type="hidden" name="id" value="<%= user._id %>">
-                                <input type="text" name="username" placeholder="New Username" required>
-                                <input type="password" name="password" placeholder="New Password" required>
-                                <button type="submit" class="btn-edit"  onclick="return confirmedit()">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </button>
-                            </form>
-                            <form action="/admin/delete" method="post" class="action-form delete-form">
-                                <input type="hidden" name="id" value="<%= user._id %>">
-                                <button type="submit" class="delete-btn" onclick="return confirmDelete()">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                    <% }) %>
-                </tbody>
-            </table>
-        </section>
-        <script>
-            function confirmDelete() {
-                return confirm("Are you sure you want to delete this user?");
+        </div>
+    </div>
+
+    <script>
+        // Password strength indicator
+        function updatePasswordStrength(input) {
+            const password = input.value;
+            const strengthBar = input.parentElement.querySelector('.admin-strength-bar div');
+            const strengthText = input.parentElement.querySelector('.admin-password-text');
+            
+            if (!strengthBar || !strengthText) return;
+            
+            let strength = 0;
+            let color = '';
+            let text = '';
+            
+            if (password.length >= 8) strength += 25;
+            if (/[a-z]/.test(password)) strength += 25;
+            if (/[A-Z]/.test(password)) strength += 25;
+            if (/[0-9]/.test(password)) strength += 25;
+            
+            if (strength < 50) {
+                color = 'var(--error-500)';
+                text = 'Weak';
+            } else if (strength < 75) {
+                color = 'var(--warning-500)';
+                text = 'Medium';
+            } else {
+                color = 'var(--success-500)';
+                text = 'Strong';
             }
-            function confirmedit() {
-                return confirm("Are you sure you want to Edit this user?");
+            
+            strengthBar.style.width = strength + '%';
+            strengthBar.style.backgroundColor = color;
+            strengthText.textContent = 'Password strength: ' + text;
+        }
+
+        // Edit modal functions
+        function openEditModal(userId, username) {
+            document.getElementById('editUserId').value = userId;
+            document.getElementById('editUsername').value = username;
+            document.getElementById('editPassword').value = '';
+            const editModal = document.getElementById('editModal');
+            editModal.style.display = 'flex';
+            setTimeout(() => editModal.classList.add('show'), 10); // Add 'show' class for transition
+        }
+
+        function closeEditModal() {
+            const editModal = document.getElementById('editModal');
+            editModal.classList.remove('show');
+            setTimeout(() => editModal.style.display = 'none', 300); // Hide after transition
+        }
+
+        // Delete confirmation with CSRF protection
+        function confirmDeleteUser(userId, username, csrfToken) {
+            if (confirm(`Are you sure you want to delete user "${username}"? This action cannot be undone.`)) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/admin/delete';
+                
+                const idInput = document.createElement('input');
+                idInput.type = 'hidden';
+                idInput.name = 'id';
+                idInput.value = userId;
+                
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = 'csrfToken';
+                csrfInput.value = csrfToken;
+                
+                form.appendChild(idInput);
+                form.appendChild(csrfInput);
+                document.body.appendChild(form);
+                form.submit();
             }
-        </script>
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Password strength for edit form
+            const editPasswordInput = document.getElementById('editPassword');
+            if (editPasswordInput) {
+                editPasswordInput.addEventListener('input', function() {
+                    updatePasswordStrength(this);
+                });
+            }
+
+            // Close modal on outside click
+            document.getElementById('editModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeEditModal();
+                }
+            });
+
+            // Form submission with loading state
+            document.getElementById('editForm').addEventListener('submit', function(e) {
+                const submitBtn = this.querySelector('.admin-btn-primary');
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+                submitBtn.disabled = true;
+            });
+
+            // Add hover effects to table rows
+            document.querySelectorAll('.admin-table tbody tr').forEach(row => {
+                row.addEventListener('mouseenter', function() {
+                    this.style.backgroundColor = 'var(--gray-50)';
+                });
+                
+                row.addEventListener('mouseleave', function() {
+                    this.style.backgroundColor = 'transparent';
+                });
+            });
+        });
+
+        // Display alert messages from URL query parameters
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const message = urlParams.get('message');
+            const type = urlParams.get('type'); // 'success' or 'error'
+            const alertMessageDiv = document.getElementById('alertMessage');
+
+            if (message && alertMessageDiv) {
+                alertMessageDiv.textContent = message;
+                alertMessageDiv.style.display = 'block';
+                alertMessageDiv.classList.add('show'); // Add 'show' class for transition
+
+                if (type === 'success') {
+                    alertMessageDiv.classList.add('admin-alert-success');
+                } else if (type === 'error') {
+                    alertMessageDiv.classList.add('admin-alert-error');
+                } else {
+                    // Default styling if no type is specified
+                    alertMessageDiv.style.backgroundColor = 'var(--gray-200)';
+                    alertMessageDiv.style.color = 'var(--gray-800)';
+                }
+
+                // Hide the message after 5 seconds
+                setTimeout(() => {
+                    alertMessageDiv.classList.remove('show'); // Remove 'show' class for transition
+                    setTimeout(() => {
+                        alertMessageDiv.style.display = 'none';
+                        // Remove query parameters from URL
+                        const newUrl = new URL(window.location.href);
+                        newUrl.searchParams.delete('message');
+                        newUrl.searchParams.delete('type');
+                        window.history.replaceState({}, document.title, newUrl.toString());
+                    }, 300); // Hide after transition
+                }, 5000);
+            }
+        });
+    </script>
 </body>
 </html>
->>>>>>> ec867de18a80236e2b318efa1eba9ec97ba5b1d7

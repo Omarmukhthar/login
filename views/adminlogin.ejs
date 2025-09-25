@@ -1,45 +1,97 @@
-<<<<<<< HEAD
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login</title>
-    <link rel="stylesheet" href="/style.css">
-</head>
-<body>
-    <div class="form-container">
-        <h2>Admin Login</h2>
-        <form action="/admin" method="post">
-            <div class="form-group">
-                <label for="adminKey">Admin Key:</label>
-                <input type="password" id="adminKey" name="adminKey" placeholder="Enter Admin Key" required>
+<%- include('partials/header', { title: 'Admin Access' }) %>
+    <div class="container" style="min-height: 100vh; display:flex; align-items:center; justify-content:center; padding: var(--space-4);">
+        <div class="card" style="max-width:420px; width:100%;">
+            <div class="card-header text-center">
+                <div style="margin-bottom: var(--space-4);">
+                    <i class="fas fa-shield-alt" style="font-size: 3rem; color: var(--color-ink);"></i>
+                </div>
+                <h1 class="font-bold">Admin Access</h1>
+                <p class="text-muted">Enter your admin credentials to access the dashboard</p>
             </div>
-            <button type="submit" class="submit-btn">Login</button>
-        </form>
+
+            <div class="card-body">
+                <div id="errorMessage" class="text-muted" style="text-align:center; margin-bottom: var(--space-4); display:none;"></div>
+                <form id="adminForm">
+                    <input type="hidden" name="csrfToken" value="<%= csrfToken %>">
+                    <div class="form-group">
+                        <label for="adminKey" class="form-label"><i class="fas fa-key" style="margin-right: var(--space-2);"></i> Admin Key</label>
+                        <input type="password" id="adminKey" name="adminKey" class="form-input" placeholder="Enter your admin key" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width:100%; margin-top: var(--space-2);"> <i class="fas fa-sign-in-alt"></i> Access Dashboard</button>
+                </form>
+            </div>
+
+            <div class="card-footer text-center">
+                <p class="text-muted"><a href="/" class="nav-link" style="text-decoration:none;"><i class="fas fa-arrow-left"></i> Back to User Login</a></p>
+            </div>
+        </div>
     </div>
+
+    <script>
+        document.getElementById('adminForm').addEventListener('submit', async function(e) {
+            e.preventDefault(); // Prevent default form submission
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalButtonHtml = submitBtn.innerHTML;
+            const errorMessageDiv = document.getElementById('errorMessage');
+
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Authenticating...';
+            submitBtn.disabled = true;
+            errorMessageDiv.style.display = 'none';
+            errorMessageDiv.textContent = '';
+
+            const adminKey = document.getElementById('adminKey').value;
+            const csrfToken = this.querySelector('input[name="csrfToken"]').value;
+
+            try {
+                const response = await fetch('/admin', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ adminKey, csrfToken })
+                });
+
+                if (response.ok) {
+                    window.location.href = '/admin/dashboard'; // Redirect on success
+                } else {
+                    const errorData = await response.json();
+                    errorMessageDiv.textContent = errorData.error || 'An unknown error occurred.';
+                    errorMessageDiv.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Admin login fetch error:', error);
+                errorMessageDiv.textContent = 'Network error. Please try again.';
+                errorMessageDiv.style.display = 'block';
+            } finally {
+                submitBtn.innerHTML = originalButtonHtml;
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Add focus effects
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('animate-pulse');
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('animate-pulse');
+            });
+        });
+
+        // Add security warning
+        document.addEventListener('DOMContentLoaded', function() {
+            const adminKeyInput = document.getElementById('adminKey');
+            adminKeyInput.addEventListener('input', function() {
+                if (this.value.length > 0) {
+                    this.style.borderColor = 'var(--warning-500)';
+                } else {
+                    this.style.borderColor = 'var(--gray-300)';
+                }
+            });
+        });
+    </script>
 </body>
 </html>
-=======
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login</title>
-    <link rel="stylesheet" href="/style.css">
-</head>
-<body>
-    <div class="form-container">
-        <h2>Admin Login</h2>
-        <form action="/admin" method="post">
-            <div class="form-group">
-                <label for="adminKey">Admin Key:</label>
-                <input type="password" id="adminKey" name="adminKey" placeholder="Enter Admin Key" required>
-            </div>
-            <button type="submit" class="submit-btn">Login</button>
-        </form>
-    </div>
-</body>
-</html>
->>>>>>> ec867de18a80236e2b318efa1eba9ec97ba5b1d7
